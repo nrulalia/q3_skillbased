@@ -1,0 +1,25 @@
+import random
+import threading
+import socket
+
+quotes = [""Without music, life would be a mistake" - Friedrich Nietzsche", ""So many books, so little time." - Frank Zappa", ""Be yourself" - Oscar Wilde"]
+
+def main()
+ bind_host = "192.168.10.30"
+ bind_port = 8080
+ serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+ serversocket.listen()
+
+ while True:
+  client, addr = serversocket.accept()
+  print("A connection from %s" % str(addr))
+  client_handler = threading.Thread(target = handle_client, args=(client,))
+  client_handler.start()
+
+def handle_client(clientsocket):
+  quote = random.choice(quotes)
+  clientsocket.sendall(quote.encode())
+  clientsocket.close()
+
+main()
